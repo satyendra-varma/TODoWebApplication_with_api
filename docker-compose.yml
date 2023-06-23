@@ -1,0 +1,16 @@
+services:
+    todoitemapi:
+      build:
+        context: ./ToDoItemApi
+        dockerfile: Dockerfile
+      links:
+        - aspnetcoretodo:TodoList
+      ports:
+        - "5217:5217"
+
+    aspnetcoretodo:
+      build: 
+        context: .
+        dockerfile: Dockerfile
+      ports:
+        - "5244:80"

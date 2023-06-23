@@ -1,0 +1,144 @@
+@model TodoViewModel
+@using Humanizer
+@using System
+
+@{
+    ViewData["Title"] = "Manage your todo list";
+}
+
+<div class="panel panel-default todo-panel">
+    <h3 class="bg-dark text-center text-white p-3">@ViewData["Title"]</h3>
+    <table class="table table-hover table-dark table-striped">
+        <thead>
+            <tr>
+                <td>&#x2714;</td>
+                <td>Item</td>
+                <td>Start Date</td>
+                <td>Number of Days</td>
+                <td>Priority</td>
+                <td>Due</td>
+            </tr>
+        </thead>
+        @{
+            Array.Sort(Model.Items);
+        }
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>
+                    <form asp-action="MarkDone" method="POST">
+                        <input type="checkbox" class="done-checkbox">
+                        <input type="hidden" name="id" value="@item.Id">
+                    </form>
+                </td>
+
+                <td class="editableTags" style="display:none">
+                    <form asp-action="UpdateTitle" method="POST" id="_form">
+                        <input class="form-control" type="text" name="title" value="@item.Title" onchange="this.form.submit()">
+                        <input type="hidden" name="id" value="@item.Id" >
+                    </form>
+                </td>
+                <td class="listTags">@item.Title</td>
+
+                <td class="editableTags" style="display:none">
+                    <form asp-action="UpdateStartDate" method="POST">
+                        <input type="date" class="form-control" name="startdate" value="@DateOnly.FromDateTime(item.StartDate.DateTime.Date)" min="@DateOnly.FromDateTime(DateTime.Now)" onchange="this.form.submit()">
+                        <input type="hidden" name="id" value="@item.Id">
+                    </form>
+                </td>
+                <td class="listTags">@item.StartDate.Humanize()</td>
+
+                <td class="editableTags" style="display:none">
+                        <form asp-action="UpdateNumberOfDays" method="POST">
+                        <input type="number" class="form-control" name="numberofdays" value="@item.NumberofDays" onchange="this.form.submit()">
+                        <input type="hidden" name="id" value="@item.Id">
+                    </form>
+                </td>
+                <td class="listTags">@item.NumberofDays</td>
+
+                <td class="editableTags" style="display:none">
+                    <form asp-action="UpdatePriority" method="POST">
+                        <select class="form-control" name="priority" value="@item.Priority" onchange="this.form.submit()">
+                            <option value="1" selected=@(item.Priority == 1)>1</option>
+                            <option value="2" selected=@(item.Priority == 2)>2</option>
+                            <option value="3" selected=@(item.Priority == 3)>3</option>
+                            <option value="4" selected=@(item.Priority == 4)>4</option>
+                            <option value="5" selected=@(item.Priority == 5)>5</option>
+                        </select>
+                        <input type="hidden" name="id" value="@item.Id">
+                    </form>
+                </td>
+                <td class="listTags">@item.Priority</td>
+
+                <td class="editableTags" style="display:none">
+                    <form asp-action="UpdateDueDate" method="POST">
+                        <input type="date" class="form-control" name="duedate" value="@DateOnly.FromDateTime(item.DueAt.DateTime.Date)" min="@DateOnly.FromDateTime(DateTime.Now)" onchange="this.form.submit()">
+                        <input type="hidden" name="id" value="@item.Id">
+                    </form>
+                </td>
+                <td class="listTags">@item.DueAt.Humanize()</td>
+            </tr>
+        }
+    </table>
+    <div class="text-center">
+        <btn id="editListButton" class="btn btn-dark text-white" onclick="editList()">Edit List</btn>
+        <btn id="cancelButton" class="btn btn-dark text-white" style="display:none" onclick="backToList()">Back to List</btn>
+        <btn id="displayAddItem" class="btn btn-dark text-white" onclick="addItem()">Add New Task</btn>
+        <btn id="hideAddItem" style="display:none" class="btn btn-dark text-white" onclick="hideAddItem()">Hide Add New Task</btn>
+    </div>
+    <br>
+    <div id="addNewItemBlock" style="display:none" class="panel-footer add-item-form">
+        @await Html.PartialAsync("AddItemPartial", new TodoItem())
+    </div>
+</div>
+
+<script>
+    function editList() {
+        var editable_items = document.getElementsByClassName("editableTags");
+        var list_items = document.getElementsByClassName("listTags");
+        for (var i = 0; i < editable_items.length; i++) {
+            editable_items[i].style.display = "table-cell";
+        }
+        for (var i = 0; i < list_items.length; i++) {
+            list_items[i].style.display = "none";
+        }
+        document.getElementById("editListButton").style.display="none";
+        document.getElementById("cancelButton").style.display = "inline-block";
+    }
+    function backToList() {
+        var editable_items = document.getElementsByClassName("editableTags");
+        var list_items = document.getElementsByClassName("listTags");
+        for (var i = 0; i < editable_items.length; i++) {
+            editable_items[i].style.display = "none";
+        }
+        for (var i = 0; i < list_items.length; i++) {
+            list_items[i].style.display = "table-cell";
+        }
+        document.getElementById("editListButton").style.display = "inline-block";
+        document.getElementById("cancelButton").style.display = "none";
+    }
+    window.onload = reloadfunction();
+    
+    function reloadfunction() {
+        if (sessionStorage.getItem('reloaded') && performance.navigation.type !== 1) {
+            editList();
+            addItem();
+        } 
+        else {
+            sessionStorage.setItem('reloaded', true);
+            console.log('Page loaded for the first time.');
+        }
+    }
+
+    function addItem() {
+        document.getElementById("addNewItemBlock").style.display = "block";
+        document.getElementById("displayAddItem").style.display = "none";
+        document.getElementById("hideAddItem").style.display = "inline-block";
+    }
+    function hideAddItem(){
+        document.getElementById("addNewItemBlock").style.display = "none";
+        document.getElementById("displayAddItem").style.display = "inline-block";
+        document.getElementById("hideAddItem").style.display = "none";
+        
+    }
+</script>

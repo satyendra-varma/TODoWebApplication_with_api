@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\AspNetCoreTodo",
+    "\\AspNetCoreTodo\\Models",
+    "\\AspNetCoreTodo\\Services",
+    "\\AspNetCoreTodo\\Views",
+    "\\AspNetCoreTodo\\Views\\Todo",
+    "\\ToDoItemApi",
+    "\\ToDoItemApi\\ToDoListApi",
+    "\\ToDoItemApi\\ToDoListApi\\Migrations",
+    "\\ToDoItemApi\\ToDoListApi\\Models"
+  ],
+  "SelectedNode": "\\ToDoItemApi\\ToDoListApi\\Program.cs",
+  "PreviewInSolutionExplorer": false
+}

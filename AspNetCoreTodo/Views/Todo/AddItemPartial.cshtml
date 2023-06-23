@@ -1,0 +1,49 @@
+@model TodoItem
+
+<form asp-action="AddItem" method="POST">
+    <h3 class="text-white bg-dark p-1 m-0 text-center ">Add a new item</h3>
+    <div class="container p-5 m-0 border border-dark">
+        <div class="row text-center">
+            <label class="col-1" asp-for="Title">Title:</label>
+            <div class="col-3">
+                <input class="form-control" asp-for="Title">
+            </div>
+            <label class="col-1" asp-for="DueAt">Due date:</label>
+            <div class="col-3">
+                <input class="form-control" type="date" value=@DateTime.Now.Date
+                       min=@DateOnly.FromDateTime(DateTime.Now) max="2024-12-31" asp-for="DueAt">
+            </div>
+            <label class="col-1" asp-for="StartDate">Start Date:</label>
+            <div class="col-3">
+                <input class="form-control" type="date" asp-for="StartDate" value=@DateTime.Now.Date
+                       min=@DateOnly.FromDateTime(DateTime.Now) max="2024-12-31">
+            </div>
+        </div><br />
+        <div class="row text-center">
+            <label class="col-2" asp-for="NumberofDays">NumberofDays:</label>
+            <div class="col-4">
+                <input class="form-control" type="number" asp-for="NumberofDays">
+            </div>
+            <label class="col-2" asp-for="Priority">Priority:</label>
+            <div class="col-4">
+                <select class="form-control" asp-for="Priority">
+                    <option value=1>1</option>
+                    <option value=2>2</option>
+                    <option value=3>3</option>
+                    <option value=4>4</option>
+                    <option value=5>5</option>
+                </select>
+            </div>
+        </div><br />
+        <div class="row text-center">
+            <div>
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+            </div>
+            
+            
+            <div class="col d-flex justify-content-center">
+                <button class="btn btn-dark" type="submit">Add</button>
+            </div>
+        </div>
+    </div>
+</form>
